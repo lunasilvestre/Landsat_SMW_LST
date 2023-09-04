@@ -9,7 +9,7 @@
 		"ghcr.io/eitsupi/devcontainer-features/jq-likes:1": {},
 		"ghcr.io/dhoeric/features/google-cloud-cli:1": {}
 	},
-	"postCreateCommand": "pip install numpy pandas rasterio satpy dask gee-python",
+	"postCreateCommand": "pip install numpy pandas rasterio satpy dask google-api-python-client pyCrypto earthengine-api",
 	"customizations": {
 		"vscode": {
 			"extensions": [
