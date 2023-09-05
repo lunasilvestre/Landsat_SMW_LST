@@ -7,12 +7,12 @@ ee.Authenticate()
 ee.Initialize()
 
 # Import required modules (these would be other refactored Python files)
-from python_modules.NCEP_TPW import addBand as add_TPW
+from python_modules.NCEP_TPW import add_band as add_TPW
 from python_modules.cloudmask import sr as cloud_mask
-from python_modules.compute_NDVI import addBand as add_NDVI
-from python_modules.compute_FVC import addBand as add_FVC
-from python_modules.compute_emissivity import addBand as add_emissivity
-from python_modules.SMWalgorithm import addBand as add_LST
+from python_modules.compute_NDVI import add_band as add_NDVI
+from python_modules.compute_FVC import add_band as add_FVC
+from python_modules.compute_emissivity import add_band as add_emissivity
+from python_modules.SMWalgorithm import add_band as add_LST
 
 COLLECTION = {
     'L4': {
@@ -51,17 +51,17 @@ def collection(landsat, date_start, date_end, geometry, use_ndvi):
     collection_dict = COLLECTION[landsat]
 
     # Load TOA Radiance/Reflectance
-    landsatTOA = ee.ImageCollection(collection_dict['TOA']).filter_date(date_start, date_end).filter_bounds(geometry)
+    landsatTOA = ee.ImageCollection(collection_dict['TOA']).filterDate(date_start, date_end).filterBounds(geometry)
     
     # Load Surface Reflectance collection for NDVI
     landsatSR = (ee.ImageCollection(collection_dict['SR'])
-                 .filter_date(date_start, date_end)
-                 .filter_bounds(geometry)
+                 .filterDate(date_start, date_end)
+                 .filterBounds(geometry)
                  .map(cloud_mask)
-                 .map(add_NDVI(landsat))
-                 .map(add_FVC(landsat))
+                 .map(lambda image: add_NDVI(landsat, image))
+                 .map(lambda image: add_FVC(landsat, image))
                  .map(add_TPW)
-                 .map(add_emissivity(landsat, use_ndvi)))
+                 .map(lambda image: add_emissivity(landsat, use_ndvi, image)))
 
     # Combine collections
     tir = collection_dict['TIR']
@@ -69,6 +69,6 @@ def collection(landsat, date_start, date_end, geometry, use_ndvi):
     landsatALL = landsatSR.select(visw).combine(landsatTOA.select(tir), True)
     
     # Compute the LST
-    landsatLST = landsatALL.map(add_LST(landsat))
+    landsatLST = landsatALL.map(lambda image: add_LST(landsat, image))
 
     return landsatLST
