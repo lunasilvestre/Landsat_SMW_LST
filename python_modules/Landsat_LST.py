@@ -7,12 +7,12 @@ ee.Authenticate()
 ee.Initialize()
 
 # Import required modules (these would be other refactored Python files)
-from NCEP_TPW import addBand as add_TPW
-from cloudmask import sr as cloud_mask
-from compute_NDVI import addBand as add_NDVI
-from compute_FVC import addBand as add_FVC
-from compute_emissivity import addBand as add_emissivity
-from SMWalgorithm import addBand as add_LST
+from python_modules.NCEP_TPW import addBand as add_TPW
+from python_modules.cloudmask import sr as cloud_mask
+from python_modules.compute_NDVI import addBand as add_NDVI
+from python_modules.compute_FVC import addBand as add_FVC
+from python_modules.compute_emissivity import addBand as add_emissivity
+from python_modules.SMWalgorithm import addBand as add_LST
 
 COLLECTION = {
     'L4': {
@@ -51,10 +51,10 @@ def collection(landsat, date_start, date_end, geometry, use_ndvi):
     collection_dict = COLLECTION[landsat]
 
     # Load TOA Radiance/Reflectance
-    landsatTOA = gee.ImageCollection(collection_dict['TOA']).filter_date(date_start, date_end).filter_bounds(geometry)
+    landsatTOA = ee.ImageCollection(collection_dict['TOA']).filter_date(date_start, date_end).filter_bounds(geometry)
     
     # Load Surface Reflectance collection for NDVI
-    landsatSR = (gee.ImageCollection(collection_dict['SR'])
+    landsatSR = (ee.ImageCollection(collection_dict['SR'])
                  .filter_date(date_start, date_end)
                  .filter_bounds(geometry)
                  .map(cloud_mask)

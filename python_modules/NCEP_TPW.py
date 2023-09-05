@@ -5,27 +5,27 @@ def add_band(image):
     Add total precipitable water values and index for the LUT of SMW algorithm coefficients to the image.
 
     Parameters:
-    - image (gee.Image): Image for which to interpolate the TPW data. Needs the 'system:time_start' image property.
+    - image (ee.Image): Image for which to interpolate the TPW data. Needs the 'system:time_start' image property.
 
     Returns:
-    - gee.Image: Image with added 'TPW' and 'TPWpos' bands.
+    - ee.Image: Image with added 'TPW' and 'TPWpos' bands.
     """
 
     date = image.get('system:time_start')
     year, month, day = date.year(), date.month(), date.day()
-    date1 = gee.Date.from_ymd(year, month, day)
+    date1 = ee.Date.from_ymd(year, month, day)
     date2 = date1.advance(1, 'days')
 
     def datedist(img):
         return img.set('DateDist', abs(img.get('system:time_start') - date.millis()))
 
-    TPWcollection = (gee.ImageCollection('NCEP_RE/surface_wv')
+    TPWcollection = (ee.ImageCollection('NCEP_RE/surface_wv')
                      .filter_date(date1.format('yyyy-MM-dd'), date2.format('yyyy-MM-dd'))
                      .map(datedist))
 
     closest = TPWcollection.sort('DateDist').to_list(2)
 
-    tpw1 = closest.get(0).select('pr_wtr') if closest.size() else gee.Image.constant(-999.0)
+    tpw1 = closest.get(0).select('pr_wtr') if closest.size() else ee.Image.constant(-999.0)
     tpw2 = closest.get(1).select('pr_wtr') if closest.size() > 1 else tpw1
 
     time1 = tpw1.get('DateDist') / 21600000 if closest.size() else 1.0
