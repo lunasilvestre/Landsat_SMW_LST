@@ -1,3 +1,13 @@
+# Landsat_SMW_LST
+
+**NOTE**: This repository has been archived and is no longer actively maintained. The project has evolved and shifted its primary focus to Python. As a result, it has been moved to a new independent repository. Please visit [ee_lst](https://github.com/lunasilvestre/ee_lst) for the active project.
+
+This repository was originally forked from [Landsat_SMW_LST](https://github.com/sofiaermida/Landsat_SMW_LST) and served as a starting point for our enhanced Python-based library. We're grateful for the foundational work done in the original repository.
+
+For any questions or concerns related to this archived repository, please contact [Nelson Luna Silvestre](https://github.com/lunasilvestre).
+
+[Rest of the original README content]
+
 Google Earth Engine code to compute Land Surface Temperature from the Landsat series of satellites.
 
 Author: Sofia Ermida (sofia.ermida@ipma.pt; @ermida_sofia)
